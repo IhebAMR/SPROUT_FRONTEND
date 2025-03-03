@@ -1,24 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:sprout/views/dashboard_screen.dart';
+import 'theme/app_theme.dart'; // Import the theme file
 import 'viewmodels/event_viewmodel.dart';
 import 'viewmodels/event_participant_viewmodel.dart';
-import 'views/dashboard_screen.dart';
 import 'models/user.dart';
+// Import other necessary files
 
 void main() {
-  // Simuler un utilisateur connecté
-  final User currentUser = User(
-    id: '1',
-    name: 'John Doe',
-    role: 'developer', // Changer ce rôle pour tester (admin, project_manager, developer)
-  );
-
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => EventViewModel()),
         ChangeNotifierProvider(create: (_) => EventParticipantViewModel()),
-        Provider<User>.value(value: currentUser), // Fournir l'utilisateur actuel
+        Provider<User>(create: (_) => User(id: '1',name: 'mohamed', role: 'admin')), // For demo purposes
       ],
       child: MyApp(),
     ),
@@ -29,11 +24,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Event Management',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      title: 'Event Management App',
+      theme: AppTheme.lightTheme, // Apply the theme
       home: DashboardScreen(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

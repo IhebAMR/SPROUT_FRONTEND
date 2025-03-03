@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/event_viewmodel.dart';
 import '../models/event.dart';
+import 'package:uuid/uuid.dart';
 
 class EventFormScreen extends StatefulWidget {
   final Event? event; // Si un événement est passé, c'est pour la modification
@@ -20,6 +21,7 @@ class _EventFormScreenState extends State<EventFormScreen> {
   final _locationController = TextEditingController();
   final _eventTypeController = TextEditingController();
   final _bannerImageController = TextEditingController();
+  
 
   @override
   void initState() {
@@ -60,34 +62,34 @@ class _EventFormScreenState extends State<EventFormScreen> {
     }
   }
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      final event = Event(
-        id: widget.event?.id ?? '', // Si c'est une modification, garder l'ID existant
-        title: _titleController.text,
-        description: _descriptionController.text,
-        date: DateTime.parse(_dateController.text),
-        location: _locationController.text,
-        participantsCount: widget.event?.participantsCount ?? 0, // Garder le compteur existant
-        reviews: widget.event?.reviews ?? [], // Garder les avis existants
-        eventType: _eventTypeController.text,
-        organizerId: '1', // Simuler l'ID de l'organisateur
-        status: 'Planned', // Statut par défaut
-        bannerImage: _bannerImageController.text,
-      );
+ void _submitForm() {
+  if (_formKey.currentState!.validate()) {
+    final event = Event(
+      id: widget.event?.id ?? Uuid().v4(), // Use existing ID for updates, generate new ID for creation
+      title: _titleController.text,
+      description: _descriptionController.text,
+      date: DateTime.parse(_dateController.text),
+      location: _locationController.text,
+      participantsCount: widget.event?.participantsCount ?? 0, // Keep existing count for updates
+      reviews: widget.event?.reviews ?? [], // Keep existing reviews for updates
+      eventType: _eventTypeController.text,
+      organizerId: '1', // Simulate organizer ID
+      status: 'Planned', // Default status
+      bannerImage: _bannerImageController.text,
+    );
 
-      final eventViewModel = Provider.of<EventViewModel>(context, listen: false);
-      if (widget.event == null) {
-        // Créer un nouvel événement
-        eventViewModel.createEvent(event);
-      } else {
-        // Modifier un événement existant
-        eventViewModel.updateEvent(event);
-      }
-
-      Navigator.pop(context); // Retourner à l'écran précédent
+    final eventViewModel = Provider.of<EventViewModel>(context, listen: false);
+    if (widget.event == null) {
+      // Create a new event
+      eventViewModel.createEvent(event);
+    } else {
+      // Update an existing event
+      eventViewModel.updateEvent(event);
     }
+
+    Navigator.pop(context); // Return to the previous screen
   }
+}
 
   @override
   Widget build(BuildContext context) {

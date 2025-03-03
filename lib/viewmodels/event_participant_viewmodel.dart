@@ -27,4 +27,6 @@ class EventParticipantViewModel with ChangeNotifier {
     await _eventParticipantService.deleteParticipant(id);
     notifyListeners();
   }
+
+  fetchParticipantsByUser(String id) {}
 }

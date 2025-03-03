@@ -23,8 +23,12 @@ class EventViewModel with ChangeNotifier {
     await fetchEvents();
   }
 
-  Future<void> deleteEvent(String id) async {
-    await _eventService.deleteEvent(id);
-    await fetchEvents();
+ Future<void> deleteEvent(String id) async {
+    try {
+      await _eventService.deleteEvent(id);
+      await fetchEvents(); // Rafraîchir la liste des événements après suppression
+    } catch (e) {
+      print('Error deleting event: $e');
+    }
   }
 }
